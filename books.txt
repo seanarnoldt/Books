@@ -68,7 +68,7 @@
     {
         "Title": "Shadows of Self",
         "Length": "436",
-        "Current": false,
-        "Page": 0
+        "Current": true,
+        "Page": "178"
     }
 ]

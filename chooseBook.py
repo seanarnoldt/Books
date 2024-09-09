@@ -3,10 +3,10 @@ import sys
 import os
 import json
 import datetime
+import math
 
-def addBook(file_path):
+def addBook(books):
     #Prompt user for book information
-    books = []
     book = {}
     print("Please enter the following information about the book")
     print("Title:")
@@ -17,52 +17,33 @@ def addBook(file_path):
     book["Length"] = length
     book["Current"] = False
     book["Page"] = 0
-    if os.path.exists(file_path):
-    # Open and read the file
-        with open(file_path, 'r') as file:
-            try:
-                books = json.load(file)
-                books.append(book)
-            except json.JSONDecodeError:
-                data_dict = {}  # Initialize an empty dictionary if file is empty or invalid
-        file.close()
-    else:
-        # Example: Appending new data to the dictionary
-        books.append(book)
+    return books
 
-        # Write the updated dictionary back to the file
-    with open(file_path, 'w') as file:
-        json.dump(books, file, indent=4)  # Write the dictionary as a JSON string
-    file.close()
-
-def status(file_path):
+def status(books):
     totalLen = 0
     daysLeft = 0
     current_date = datetime.datetime.now()
     end_of_year = datetime.datetime(current_date.year, 12, 31)
     daysLeft = (end_of_year - current_date).days
-    with open(file_path, 'r') as file:
-        try:
-            books = json.load(file)
-        except json.JSONDecodeError:
-            print("JSON load failed")
-    file.close()
     for book in books:
         totalLen += (int(book["Length"]) - int(book["Page"]))
     pagesPerDay = totalLen / daysLeft
-    return pagesPerDay
+    print(f"To complete all of the books in your backlog by the end of the year you need to read {pagesPerDay} pages per day.")
+    for book in books:
+        if book["Current"] == True:
+            remaining = int(book["Length"]) - int(book["Page"])
+            days = math.ceil(remaining/pagesPerDay)
+            delta = datetime.timedelta(days=days)
+            targetDate = current_date + delta
+            print(f"Target completion of current book is {targetDate}.")
+    return books
 
-def edit(file_path):
+def edit(books):
     invalid = True
     while invalid:
-        with open(file_path, 'r') as file:
-            try:
-                books = json.load(file)
-            except json.JSONDecodeError:
-                print("JSON load failed")
-        file.close()
         print("Which book would you like to edit?")
-        print(books)
+        for book in books:
+            print(book["Title"])
         editing = input()
         book_edit = None
         for book in books:
@@ -92,9 +73,6 @@ def edit(file_path):
                 confirm = input("Are you sure you want to complete this book? It will be removed from your backlog. (y/n)")
                 if confirm == "y":
                     books.pop(book)
-                    with open(file_path, 'w') as file:
-                        json.dump(books, file, indent=4)  # Write the dictionary as a JSON string
-                    file.close()
                 elif confirm == "n":
                     print("Operation cancelled")
                 else:
@@ -102,13 +80,23 @@ def edit(file_path):
             case _: 
                 invalid = True
                 print("Invalid selection. Valid selections: (current_book, current_page, title, length)")
+    return books
 
 if __name__ == "__main__":
     file_path = "books.txt"
+    if os.path.exists(file_path):
+    # Open and read the file
+        with open(file_path, 'r') as file:
+            try:
+                books = json.load(file)
+            except json.JSONDecodeError:
+                print("Failed to load books from JSON")
+    file.close()
+        
     if sys.argv[1] == "-a":
         another = True
         while another:
-            addBook(file_path)
+            books = addBook(books)
             print("Add another book? (y/n)")
             response = input()
             if response == 'y':
@@ -119,8 +107,11 @@ if __name__ == "__main__":
                 print('Invalid input expect y or n')
                 another = False
     if sys.argv[1] == "-s":
-        pagesPerDay = status(file_path)
-        print(f"To complete all of the books in your backlog by the end of the year you need to read {pagesPerDay} pages per day.")
+        books = status(books)
     if sys.argv[1] == "-e":
-        edit(file_path)
+        books = edit(books)
+
+    with open(file_path, 'w') as file:
+        json.dump(books, file, indent=4)  # Write the dictionary as a JSON string
+    file.close()
         
