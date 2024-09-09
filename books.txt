@@ -2,8 +2,8 @@
     {
         "Title": "Republic Commando: Order 66",
         "Length": "482",
-        "Current": false,
-        "Page": 0
+        "Current": true,
+        "Page": "178"
     },
     {
         "Title": "Imperial Commando: 501st",
@@ -68,7 +68,7 @@
     {
         "Title": "Shadows of Self",
         "Length": "436",
-        "Current": true,
-        "Page": "178"
+        "Current": false,
+        "Page": "0"
     }
 ]

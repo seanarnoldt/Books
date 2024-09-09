@@ -59,20 +59,20 @@ def edit(books):
         invalid = False
         match choice:
             case "current_book":
-                if book["Current"] == False:
-                    book["Current"] = True
+                if book_edit["Current"] == False:
+                    book_edit["Current"] = True
                 else:
-                    print("This is already your current book. Changing it will affect nothing.")
+                    book_edit["Current"] = False
             case "current_page":
-                book["Page"] = input("What page are you on?")
+                book_edit["Page"] = input("What page are you on?")
             case "title":
-                book["Title"] = input("What is the title of the book?")
+                book_edit["Title"] = input("What is the title of the book?")
             case "length":
-                book["Length"] = input("How many pages are in the book?")
+                book_edit["Length"] = input("How many pages are in the book?")
             case "complete":
                 confirm = input("Are you sure you want to complete this book? It will be removed from your backlog. (y/n)")
                 if confirm == "y":
-                    books.pop(book)
+                    books.pop(book_edit)
                 elif confirm == "n":
                     print("Operation cancelled")
                 else:
