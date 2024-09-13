@@ -25,18 +25,20 @@ def status(books):
     daysLeft = 0
     current_date = datetime.datetime.now()
     end_of_year = datetime.datetime(current_date.year, 12, 31)
-    daysLeft = (end_of_year - current_date).days
+    daysLeft = (end_of_year - current_date).days + 2
     for book in books:
         totalLen += (int(book["Length"]) - int(book["Page"]))
-    pagesPerDay = totalLen / daysLeft
+    pagesPerDay = math.ceil(totalLen / daysLeft)
     print(f"To complete all of the books in your backlog by the end of the year you need to read {pagesPerDay} pages per day.")
     for book in books:
         if book["Current"] == True:
             remaining = int(book["Length"]) - int(book["Page"])
-            days = math.ceil(remaining/pagesPerDay)
-            delta = datetime.timedelta(days=days)
-            targetDate = current_date + delta
-            print(f"Target completion of current book is {targetDate}.")
+            days = math.floor(remaining/pagesPerDay)
+            delta = datetime.timedelta(days=days-1)
+            targetDate = (current_date + delta)
+            title = book["Title"]
+            formattedDate = targetDate.strftime("%A, %B %d")
+            print(f"Target completion date of {title} is {formattedDate}.")
     return books
 
 def edit(books):
@@ -73,7 +75,11 @@ def edit(books):
             case "complete":
                 confirm = input("Are you sure you want to complete this book? It will be removed from your backlog. (y/n)")
                 if confirm == "y":
-                    books.pop(book_edit)
+                    for i in range(0, len(books)-1):
+                        book = books[i]
+                        if book["Title"] == book_edit["Title"]:
+                            books.pop(i)
+                            break
                 elif confirm == "n":
                     print("Operation cancelled")
                 else:
@@ -84,38 +90,35 @@ def edit(books):
     return books
 
 if __name__ == "__main__":
-    if len(sys.argv) == 1:
-        gui.test()
-    else:
-        file_path = "books.txt"
-        if os.path.exists(file_path):
-        # Open and read the file
-            with open(file_path, 'r') as file:
-                try:
-                    books = json.load(file)
-                except json.JSONDecodeError:
-                    print("Failed to load books from JSON")
-        file.close()
-            
-        if sys.argv[1] == "-a":
-            another = True
-            while another:
-                books = addBook(books)
-                print("Add another book? (y/n)")
-                response = input()
-                if response == 'y':
-                    another = True
-                elif response == 'n':
-                    another = False
-                else:
-                    print('Invalid input expect y or n')
-                    another = False
-        if sys.argv[1] == "-s":
-            books = status(books)
-        if sys.argv[1] == "-e":
-            books = edit(books)
-
-        with open(file_path, 'w') as file:
-            json.dump(books, file, indent=4)  # Write the dictionary as a JSON string
-        file.close()    
+    file_path = "books.txt"
+    if os.path.exists(file_path):
+    # Open and read the file
+        with open(file_path, 'r') as file:
+            try:
+                books = json.load(file)
+            except json.JSONDecodeError:
+                print("Failed to load books from JSON")
+    file.close()
         
+    if sys.argv[1] == "-a":
+        another = True
+        while another:
+            books = addBook(books)
+            print("Add another book? (y/n)")
+            response = input()
+            if response == 'y':
+                another = True
+            elif response == 'n':
+                another = False
+            else:
+                print('Invalid input expect y or n')
+                another = False
+    if sys.argv[1] == "-s":
+        books = status(books)
+    if sys.argv[1] == "-e":
+        books = edit(books)
+
+    with open(file_path, 'w') as file:
+        json.dump(books, file, indent=4)  # Write the dictionary as a JSON string
+    file.close()    
+    
