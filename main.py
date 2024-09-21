@@ -8,25 +8,11 @@ import gui
 import backlog
 import book
 
-def initializeBacklog(rawBacklog):
-    bl = backlog.Backlog()
-    for title in rawBacklog:
-        newBook = book.Book(str(title["Title"]), int(title["Length"]), bool(title["Current"]), bool(title["Page"]))
-        bl.addBook(newBook)
-    return bl
+    
 
 if __name__ == "__main__":
-    file_path = "books.txt"
-    if os.path.exists(file_path):
-    # Open and read the file
-        with open(file_path, 'r') as file:
-            try:
-                rawbacklog = json.load(file)
-            except json.JSONDecodeError:
-                print("Failed to load books from JSON")
-    file.close()
-    userBacklog = initializeBacklog(rawBacklog=rawbacklog)
-
+    userBacklog = backlog.Backlog()
+    userBacklog.loadBacklog()
     if len(sys.argv) == 1:
         gui.menu(userBacklog)
     else:    
