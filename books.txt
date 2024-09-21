@@ -1,17 +1,5 @@
 [
     {
-        "Title": "Republic Commando: Order 66",
-        "Length": "482",
-        "Current": true,
-        "Page": "178"
-    },
-    {
-        "Title": "Imperial Commando: 501st",
-        "Length": "434",
-        "Current": false,
-        "Page": 0
-    },
-    {
         "Title": "Chain Gang All Stars",
         "Length": "359",
         "Current": false,
