@@ -24,3 +24,9 @@ class Book():
 
     def setCurrentPage(self, currentPage):
         self.currentPage = currentPage
+
+    def setAll(self, values):
+        self.title = values[0]
+        self.length = values[1]
+        self.current = values[2]
+        self.currentPage = values[3]
