@@ -12,8 +12,11 @@ class Backlog:
         self.backlog.append(book)
 
     def removeBook(self, book):
-        self.backlog.pop(book)
-    
+        for i in range(len(self.backlog)):
+            if book.title == self.backlog[i].title:
+                self.backlog.pop(i)
+        self.saveBacklog()
+        
     def loadBacklog(self, file_path = "books.txt"):
         rawBacklog = None
         if os.path.exists(file_path):
