@@ -15,6 +15,7 @@ class Backlog:
         for i in range(len(self.backlog)):
             if book.title == self.backlog[i].title:
                 self.backlog.pop(i)
+                break
         self.saveBacklog()
         
     def loadBacklog(self, file_path = "books.txt"):
